@@ -3,8 +3,7 @@ require 'sinatra/jsonapi'
 configure_jsonapi do |c|
   # To-one relationship roles
   c.default_has_one_roles = {
-      pluck: :virtual_machine,
-      pluck: :hypervisor
+      pluck: :virtual_machine
   }
 
   # To-many relationship roles

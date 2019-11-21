@@ -22,29 +22,12 @@ require "config/environments/#{ENV.fetch('RACK_ENV')}.rb"
 require 'singleton'
 require 'yaml'
 
+p Libvirt::version()
 
-class Configuration
-  include Singleton
+cfg=YAML.load_file(File.join(__dir__, 'cluster.yml'))
 
-  attr_reader :hypervisors, :hypervisors_hash, :libvirt_rw
-
-  def initialize
-    @hypervisors = []
-    @hypervisors_hash = {}
-    @libvirt_rw = false
-
-    cfg=YAML.load_file(File.join(__dir__, 'cluster.yml'))
-    cfg['hypervisors'].each do |hv|
-      #add to array
-      @hypervisors.push(Hypervisor.new(hv["id"], hv["name"], hv["uri"]))
-      #add to hash for fast lookup
-      @hypervisors_hash[hv["id"]] = Hypervisor.new(hv["id"], hv["name"], hv["uri"])
-    end
-  end
-
-end
-
-p Configuration.instance
+Configuration.instance.configure(cfg)
+#p Configuration.instance
 
 
 
