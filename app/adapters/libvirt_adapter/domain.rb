@@ -15,7 +15,7 @@ module LibvirtAdapter
 
     def self.all
       domains=[]
-      ::Configuration.instance.hypervisors.each do |hv|
+      ::Hypervisor.all.each do |hv|
         hv.connection.list_all_domains.map do |domain|
           p domain.methods.inspect
           domains.push new(domain,hv)
@@ -27,7 +27,7 @@ module LibvirtAdapter
 
     def self.find_by(id:)
       domains=[]
-      ::Configuration.instance.hypervisors.each do |hv|
+      ::Hypervisor.all.each do |hv|
         vm = hv.connection.lookup_domain_by_uuid(id)
         unless vm.nil?
           return new(vm,hv)

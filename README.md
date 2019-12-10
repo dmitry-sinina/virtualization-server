@@ -8,14 +8,14 @@ It assumes that you have libvirt installed and configured along the lines of [th
 
 ### Virtual Machines
 
-The `/virtual_machines/` namespace is where all CRUD operations for a virtual machine and their dependents live.
+The `/virtual-machines/` namespace is where all CRUD operations for a virtual machine and their dependents live.
 
 #### List all virtual machines
 
 Request:
 
 ```
-$ curl -s http://localhost:4567/virtual_machines
+$ curl -s http://localhost:4567/virtual-machines -H "Accept: application/vnd.api+json"
 ```
 
 Response:
@@ -40,7 +40,7 @@ Response:
 Request:
 
 ```
-$ curl -s http://localhost:4567/virtual_machines/2de02519-c347-432c-9923-3753c3538e02
+$ curl -s http://localhost:4567/virtual-machines/2de02519-c347-432c-9923-3753c3538e02 -H "Accept: application/vnd.api+json"
 ```
 
 Response:
@@ -63,7 +63,7 @@ Response:
 Request:
 
 ```
-$ curl -s http://localhost:4567/virtual_machines -X POST -d '{"cpus": 2, "memory": 8388608}'
+$ curl -s http://localhost:4567/virtual-machines -X POST -d '{"cpus": 2, "memory": 8388608}' -H "Content-Type: application/vnd.api+json" -H "Accept: application/vnd.api+json"
 ```
 
 Response:
@@ -86,7 +86,7 @@ Response:
 Request:
 
 ```
-$ curl -s http://localhost:4567/virtual_machines/2de02519-c347-432c-9923-3753c3538e02 -X PATCH -d '{"state":"started"}'
+$ curl -s http://localhost:4567/virtual-machines/2de02519-c347-432c-9923-3753c3538e02 -X PATCH -d '{"state":"started"}' -H "Content-Type: application/vnd.api+json" -H "Accept: application/vnd.api+json"
 ```
 
 ##### Input
@@ -115,7 +115,7 @@ Response:
 Request:
 
 ```
-$ curl -s http://localhost:4567/virtual_machines/2de02519-c347-432c-9923-3753c3538e02 -X DELETE
+$ curl -s http://localhost:4567/virtual-machines/2de02519-c347-432c-9923-3753c3538e02 -X DELETE  -H "Accept: application/vnd.api+json"
 ```
 
 Response:

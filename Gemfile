@@ -9,6 +9,9 @@ gem 'ruby-libvirt'
 gem 'pry'
 gem 'sinja'
 gem 'jsonapi-serializers'
+gem 'activesupport'
+gem 'epoll'
+gem 'reentrant_mutex'
 
 group :test do
   gem 'rspec'
