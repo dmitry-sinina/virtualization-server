@@ -1,3 +1,5 @@
 .env
 .idea
-config/cluster.yml
+/config/app.yml
+/public/screenshots/*
+!/public/screenshots/.keep

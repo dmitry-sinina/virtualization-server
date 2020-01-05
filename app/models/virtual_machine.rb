@@ -1,58 +1,53 @@
 class VirtualMachine
   extend Forwardable
 
-  attr_reader :id, :name, :cpus, :memory, :state, :hypervisor, :xml
+  attr_reader :id, :name, :cpus, :memory, :state, :hypervisor, :xml, :adapter
 
   ADAPTER_CLASS = LibvirtAdapter::Domain
 
-  @hash={}
-  @cache=[]
+  class_attribute :_hash, instance_writer: false, default: {}
+  class_attribute :_cache, instance_writer: false, default: []
 
-  def self.load_from_hypervisors
-
-    @hash={}
-    @cache=[]
-
-    ADAPTER_CLASS.all.map do |vm|
-      v = new(
-        id: vm.id,
-        name: vm.name,
-        hypervisor: vm.hypervisor,
-        state: vm.state,
-        cpus: vm.cpus,
-        memory: vm.memory,
-        adapter: vm,
-        xml: vm.xml
+  class << self
+    def build(domain, hv)
+      vm = LibvirtAdapter::Domain.new(domain, hv)
+      new(
+          id: vm.id,
+          name: vm.name,
+          hypervisor: hv,
+          state: vm.state,
+          cpus: vm.cpus,
+          memory: vm.memory,
+          adapter: vm,
+          xml: vm.xml
       )
-      @cache.push(v)
-      @hash[vm.id] = v
     end
-    return @cache
+
+    def all
+      Hypervisor.all.map(&:virtual_machines).flatten
+    end
+
+    def find_by(id:)
+      all.detect { |domain| domain.id == id }
+    end
+
+    def create(attrs)
+      vm = ADAPTER_CLASS.create(attrs)
+
+      new(
+          id: vm.id,
+          name: vm.name,
+          hypervisor: vm.hypervisor,
+          state: vm.state,
+          cpus: vm.cpus,
+          memory: vm.memory,
+          adapter: vm,
+          xml: nil
+      )
+    end
   end
 
-  def self.all
-    return @cache
-  end
-
-  def self.find_by(id:)
-    return @hash[id]
-  end
-
-  def self.create(attrs)
-    vm = ADAPTER_CLASS.create(attrs)
-
-    new(
-      id: vm.id,
-      name: vm.name,
-      hypervisor: vm.hypervisor,
-      state: vm.state,
-      cpus: vm.cpus,
-      memory: vm.memory,
-      adapter: vm
-    )
-  end
-
-  def initialize(id:, name:, hypervisor:, state: nil, cpus:, memory:, adapter: ADAPTER, xml:)
+  def initialize(id:, name:, hypervisor:, state: nil, cpus:, memory:, adapter:, xml:)
     @id       = id
     @name     = name
     @hypervisor = hypervisor
@@ -63,11 +58,14 @@ class VirtualMachine
     @xml = xml
   end
 
-
   def tags
-
+    nil
   end
 
-
-
+  # @param filename [String] path where screenshot will be uploaded.
+  # @yield on complete or error (args: success [Boolean], filename [String]).
+  # @return [Proc] function that will cancel screenshot taking.
+  def take_screenshot(filename, &block)
+    @adapter.take_screenshot(filename, &block)
+  end
 end

@@ -1,1 +1,1 @@
-VirtualizationServer.libvirt_domain_type = 'qemu'
+VirtualizationServer.config.libvirt_domain_type = 'qemu'
